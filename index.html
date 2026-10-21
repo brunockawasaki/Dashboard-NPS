@@ -211,7 +211,7 @@ function exemplo(){
 
 function lerLinhas(rows){
   if(!rows.length)return [];
-  const cols=Object.keys(rows[0]);
+  const cols=[...new Set(rows.flatMap(r=>Object.keys(r)))];
   const achar=(...ks)=>cols.find(c=>ks.every(k=>norm(c).includes(norm(k))));
   const c={ident:achar("identificar"),setor:achar("seu setor"),tempo:achar("quanto tempo"),freq:achar("frequencia"),nota:achar("recomendaria"),mapa:achar("mapear")};
   const lik=FRASES.map(f=>achar(f[1]));
