@@ -124,6 +124,11 @@ body.dalt .com blockquote{border-left-color:#0072B2}
 body.dalt [style*="var(--detr)"],body.dalt .bars .fill.low{background-image:repeating-linear-gradient(45deg,rgba(0,0,0,.4) 0 4px,transparent 4px 8px)!important}
 body.dalt [style*="var(--prom)"],body.dalt .bars .fill.high{background-image:radial-gradient(rgba(255,255,255,.7) 1.5px,transparent 1.6px)!important;background-size:6px 6px!important}
 body.dalt .stack div{text-shadow:0 0 3px #000}
+/* barras sem "bom/ruim" usam a cor da marca (vermelho; azul no modo Daltonismo); a média por frase segue com cinza + destaques */
+.bars:not(#likert) .fill{background:var(--verm)}
+body.escuro .bars:not(#likert) .fill{background:var(--verm)}
+body.escuro .bars .fill.low{background:var(--detr)}
+body.escuro .bars .fill.high{background:var(--prom)}
 </style>
 </head>
 <body>
