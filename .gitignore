@@ -1,0 +1,6 @@
+Dashboard NPS.html
+*.xlsx
+*.xls
+*.csv
+~$*
+__pycache__/
