@@ -129,6 +129,26 @@ body.dalt .stack div{text-shadow:0 0 3px #000}
 body.escuro .bars:not(#likert) .fill{background:var(--verm)}
 body.escuro .bars .fill.low{background:var(--detr)}
 body.escuro .bars .fill.high{background:var(--prom)}
+/* faixas da média por frase: abaixo de 3 vermelho; de 3 a 3,5 amarelo; acima de 3,5 verde */
+:root{--fx-low:#C0272D;--fx-mid:#E0A800;--fx-high:#2E7D4F}
+body.escuro{--fx-low:#FF6B6B;--fx-mid:#F2C94C;--fx-high:#4FC38A}
+body.dalt{--fx-low:#D55E00;--fx-mid:#F0E442;--fx-high:#0072B2}
+.bars .fill.low{background:var(--fx-low)}
+.bars .fill.mid{background:var(--fx-mid)}
+.bars .fill.high{background:var(--fx-high)}
+body.escuro .bars .fill.low{background:var(--fx-low)}
+body.escuro .bars .fill.mid{background:var(--fx-mid)}
+body.escuro .bars .fill.high{background:var(--fx-high)}
+body.dalt .bars .fill.low{background:var(--fx-low)}
+body.dalt .bars .fill.high{background:var(--fx-high)}
+body.dalt .bars .fill.mid{background-color:var(--fx-mid);background-image:repeating-linear-gradient(-45deg,rgba(0,0,0,.4) 0 2px,transparent 2px 7px)!important;box-shadow:inset 0 0 0 1px rgba(0,0,0,.45)}
+.faixas{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;margin-top:10px;color:#555}
+body.escuro .faixas{color:#BDBDBD}
+.faixas i{display:inline-block;width:12px;height:12px;border-radius:2px;margin-right:5px;vertical-align:-2px}
+.faixas .low{background:var(--fx-low)}.faixas .mid{background:var(--fx-mid)}.faixas .high{background:var(--fx-high)}
+body.dalt .faixas .low{background-image:repeating-linear-gradient(45deg,rgba(0,0,0,.4) 0 4px,transparent 4px 8px)}
+body.dalt .faixas .high{background-image:radial-gradient(rgba(255,255,255,.7) 1.5px,transparent 1.6px);background-size:6px 6px}
+body.dalt .faixas .mid{background-image:repeating-linear-gradient(-45deg,rgba(0,0,0,.4) 0 2px,transparent 2px 7px);box-shadow:inset 0 0 0 1px rgba(0,0,0,.45)}
 </style>
 </head>
 <body>
@@ -162,7 +182,7 @@ body.escuro .bars .fill.high{background:var(--prom)}
     <div class="card"><h2>NPS por frequência de uso dos documentos</h2><div id="npsfreq"></div></div>
     <div class="card"><h2>O que dizem os detratores (nota 0 a 6)</h2><div class="com" id="detr"></div></div>
   </div>
-  <div class="card" style="margin-top:16px"><h2>Média por frase (escala 1 a 5)</h2><div class="bars" id="likert"></div><div class="nota">Maior média marcada com ▲ e menor média marcada com ▼. As cores seguem a aparência escolhida em Acessibilidade.</div></div>
+  <div class="card" style="margin-top:16px"><h2>Média por frase (escala 1 a 5)</h2><div class="bars" id="likert"></div><div class="faixas"><span><i class="low"></i>▼ Abaixo de 3</span><span><i class="mid"></i>● De 3 a 3,5</span><span><i class="high"></i>▲ Acima de 3,5</span></div></div>
   <div class="grid two">
     <div class="card"><h2>Tempo no Grupo</h2><div class="bars" id="tempo"></div></div>
     <div class="card"><h2>Frequência de uso dos documentos</h2><div class="bars" id="freq"></div></div>
@@ -365,7 +385,7 @@ function desenhar(d,demo,nome){
   dets.forEach(x=>Object.keys(x.txt).forEach(k=>cd.push([TEXTOS[k][0],x.nota,x.txt[k]])));
   document.getElementById("detr").innerHTML=cd.length?cd.map(([q,n,tx])=>`<blockquote>${esc(tx)}<br><small style="color:#888">${esc(q)} · nota ${n}</small></blockquote>`).join("")+`<div class="nota">${dets.length} detratores; ${cd.length} comentários. Sem nomes, para preservar quem respondeu.</div>`:'<span class="vazio">Nenhum detrator deixou comentário.</span>';
   const vals=medias.filter(x=>!isNaN(x));const mn=Math.min(...vals),mxx=Math.max(...vals);
-  document.getElementById("likert").innerHTML=FRASES.map((f,i)=>{const m=medias[i];return `<div class="row"><span>${esc(f[0])}${m===mn?" <b>▼ menor</b>":m===mxx?" <b>▲ maior</b>":""}</span><div class="track"><div class="fill ${m===mn?"low":m===mxx?"high":""}" style="width:${isNaN(m)?0:m/5*100}%"></div></div><span class="n">${fmt(m,2)}</span></div>`}).join("");
+  document.getElementById("likert").innerHTML=FRASES.map((f,i)=>{const m=medias[i];return `<div class="row"><span>${esc(f[0])}</span><div class="track"><div class="fill ${isNaN(m)?"":m<3?"low":m<=3.5?"mid":"high"}" style="width:${isNaN(m)?0:m/5*100}%"></div></div><span class="n">${isNaN(m)?"":m<3?"▼ ":m<=3.5?"● ":"▲ "}${fmt(m,2)}</span></div>`}).join("");
   bars("tempo",TEMPOS.map(t=>[t,d.filter(x=>norm(x.tempo)===norm(t)).length]),N);
   bars("freq",FREQS.map(t=>[t,d.filter(x=>norm(x.freq)===norm(t)).length]),N);
   bars("ident",[["Identificados",ident],["Anônimos",N-ident]],N);
